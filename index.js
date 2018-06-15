@@ -13,7 +13,7 @@ app.get('/api/product', (req, res) => {
   Product.find({}, (err, products) => {
     if (err) res.status(500).send({ message: `Error: ${err}` })
 
-    if (!products) res.status(404).send({message: `Error: ${err}`})
+    if (!products) res.status(404).send({ message: `Error product not found: ${err}` })
 
     res.status(200).send({ products });
   });
@@ -25,15 +25,13 @@ app.get('/api/product/:productId', (req, res) => {
   Product.findById(productId, (err, product) => {
     if (err) res.status(500).send({ message: `Error: ${err}` })
 
-    if (!product) res.status(404).send({message: `Error: ${err}`})
+    if (!product) res.status(404).send({ message: `Error product not found: ${err}` })
 
     res.status(200).send({ product })
   });
 });
 
 app.post('/api/product', (req, res) => {
-  console.log('POST /api/product');
-  console.log(req.body);
 
   let product = new Product();
 
@@ -52,10 +50,31 @@ app.post('/api/product', (req, res) => {
 
 app.put('/api/product/:productId', (req, res) => {
 
+  let productId = req.params.productId
+  let productUpdate = req.body
+
+  Product.findByIdAndUpdate(productId, productUpdate, (err, productStored) => {
+    if (err) res.status(500).send({ message: `Error data base: ${err}` })
+
+    res.status(200).send({ product: productStored })
+  })
 });
 
 app.delete('/api/product/:productId', (req, res) => {
 
+  let productId = req.params.productId
+
+  Product.findById(productId, (err, product) => {
+    if (err) res.status(500).send({ message: `Error: ${err}` })
+
+    if (!product) res.status(404).send({message: `Error product not found: ${err}`})
+
+    product.remove(err => {
+      if (err) res.status(500).send({ message: `Error: ${err}` })
+
+      res.status(200).send({ message: 'Product has been deleted' })
+    })
+  });
 });
 
 mongoose.connect('mongodb://localhost:27017/shop', (err, res) => {
