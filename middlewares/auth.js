@@ -1,4 +1,4 @@
-const service = require('../services/authentication');
+const auth = require('../services/authentication');
 
 function isAuth (req, res, next) {
   if (!req.headers.authorization){
@@ -6,9 +6,10 @@ function isAuth (req, res, next) {
   }
 
   // Request the token from the header
+  // First you have the 'bearer' and then one space between the token
   const token = req.headers.authorization.split(" ")[1];
 
-  services.decodeToken(token)
+  auth.decodeToken(token)
     .then(response => {
       req.user = response,
         next()

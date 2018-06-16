@@ -9,4 +9,14 @@ const ProductSchema = new Schema ({
   description: String
 });
 
+/**
+ * Example product
+ * 
+ * name:MacBook Air
+ * picture:macbook_air.png
+ * price:2500
+ * category:computers
+ * description:Best laptop ever
+*/
+
 module.exports = mongoose.model('Product', ProductSchema);

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const User = require('../moodels/user');
-const service = require('../services');
+const User = require('../models/user');
+const auth = require('../services/authentication');
 
 function signUp (req, res) {
   const user = new User({
@@ -8,10 +8,12 @@ function signUp (req, res) {
     displayName: req.body.displayName
   });
 
+  user.avatar = user.gravatar();
+
   user.save((err) => {
     if (err) res.status(500).send({ message: `Error creating user: ${err}` })
 
-    return res.status(200).send({ token: service.createToken(user) });
+    return res.status(200).send({ token: auth.createToken(user) });
   });
 }
 
@@ -23,7 +25,7 @@ function signIn () {
     req.user = user;
     res.status(200).send({
       message: 'You are logged',
-      token: service.createToken(user)
+      token: auth.createToken(user)
     });
   })
 }

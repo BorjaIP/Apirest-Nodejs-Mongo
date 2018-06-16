@@ -9,7 +9,7 @@ const saltRounds = 10;
 const CryptoJS = require("crypto-js");
 
 const UserSchema = new Schema ({
-  email: { type: String, unique: true, lowercase: true }
+  email: { type: String, unique: true, lowercase: true },
   displayName: String,
   avatar: String,
   password: { type: String, select: false },
@@ -17,10 +17,19 @@ const UserSchema = new Schema ({
   lastLogin: Date
 });
 
+/**
+ * Example user
+ *
+ * email:cool@email.com
+ * displayName:Borja
+ * password:pass
+ *
+ */
+
 // Function for encrypt the password before save
-UserSchema.pre('save', (next) => {
+UserSchema.pre('save', function (next) {
   let user = this;
-  if (|user.isModified('password')) return next()
+  if (!user.isModified('password')) return next()
 
   // Generate a salt (random data)
   bcrypt.genSalt(saltRounds, (err, salt) => {
@@ -37,7 +46,7 @@ UserSchema.pre('save', (next) => {
 
 // Get the avatar from gravatar
 UserSchema.methods.gravatar = function () {
-  if (|this.email) return 'https://gravatar.com/avatar/?s=200&d=retro'
+  if (!this.email) return 'https://gravatar.com/avatar/?s=200&d=retro'
 
   // Create a hash in md5 for url in gravatar
   let hash = CryptoJS.MD5(this.email);
