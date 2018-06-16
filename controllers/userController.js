@@ -16,7 +16,16 @@ function signUp (req, res) {
 }
 
 function signIn () {
+  User.find({ email: req.body.email }, (err, user) => {
+    if (err) return res.status(500).send({ message: err });
+    if (!user) return res.status(404).send({ message: 'User doesn\'t exists' });
 
+    req.user = user;
+    res.status(200).send({
+      message: 'You are logged',
+      token: service.createToken(user)
+    });
+  })
 }
 
 module.exports = { signUp, signIn };
