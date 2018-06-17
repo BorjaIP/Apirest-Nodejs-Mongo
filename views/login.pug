@@ -1,0 +1,35 @@
+extends layout
+
+block content
+	.main.container-fluid
+		.row.justify-content-md-center
+			.col-md-4.col-sm-4
+
+				// Login form
+				h1.display-4.m-b-2 Login
+				form#login(method='POST')
+					div.form-group.row
+						label.col-md-12(for='email') Email:
+						.col-md-12
+							input#email.form-control(type='email', name='email', value="", placeholder='Your email')
+					div.form-group.row
+						label.col-md-12(for='pw') Password:
+						.col-md-12
+							input#pass.form-control(type='password', name='password', value="", placeholder='Your password')
+					button.btn.btn-primary.mx-2(type='submit') Login
+					a.btn.btn-primary(href='/api/product', role="button") Products
+					script(type='text/javascript').
+						const formLogin = document.querySelector('#login')
+						const formData = new FormData(formLogin)
+
+						login.addEventListener('submit', event => {
+							event.preventDefault()
+							fetch('/api/signin', {
+								method: 'POST',
+								body: formData
+							})
+							.then(res => res.json())
+							.then(data => {
+								localStorage.setItem('token', data.token)
+							})
+						})

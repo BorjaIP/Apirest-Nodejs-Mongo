@@ -27,9 +27,8 @@ const UserSchema = new Schema ({
  */
 
 // Function for encrypt the password before save
-UserSchema.pre('save', function (next) {
+UserSchema.pre('save', (next) => {
   let user = this;
-  if (!user.isModified('password')) return next()
 
   // Generate a salt (random data)
   bcrypt.genSalt(saltRounds, (err, salt) => {
